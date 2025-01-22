@@ -1,5 +1,4 @@
-# GLM ![Build Status](https://img.shields.io/github/workflow/status/your-username/GLM/Build) ![Test Status](https://img.shields.io/github/workflow/status/your-username/GLM/Test)
-
+# GLM ![Build Status](https://github.com/devVux/GLM/actions/workflows/windows-build.yaml/badge.svg?branch=master) ![Test Status](https://github.com/devVux/GLM/actions/workflows/tests.yaml/badge.svg?branch=master)
 This is a porting of the [glm](https://github.com/g-truc/glm) library in F#.
 
 ## Description
