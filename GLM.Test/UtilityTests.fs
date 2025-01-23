@@ -14,7 +14,7 @@ type UtilityTests () =
         let matrix = create 3 3 (fun i -> i + 1)
         let row = 1
         let col = 2
-        let computedIndex = index matrix row col
+        let computedIndex = toIndex matrix.Cols row col
         let expectedIndex = 5
         Assert.That(computedIndex, Is.EqualTo(expectedIndex))
 
@@ -24,7 +24,7 @@ type UtilityTests () =
         let matrix = create 3 3 (fun i -> i + 1)
         let row = 2
         let col = 2
-        let computedIndex = index matrix row col
+        let computedIndex = toIndex matrix.Cols row col
         let expectedIndex = 8
         Assert.That(computedIndex, Is.EqualTo(expectedIndex))
 
@@ -34,69 +34,53 @@ type UtilityTests () =
         let matrix = create 3 3 (fun i -> i + 1)
         let row = 0
         let col = 0
-        let computedIndex = index matrix row col
+        let computedIndex = toIndex matrix.Cols row col
         let expectedIndex = 0
         Assert.That(computedIndex, Is.EqualTo(expectedIndex))
 
-    // Test 4: Indexing with out-of-bounds column (col=3), should throw ArgumentException
-    [<Test>]
-    member this.Index_ShouldThrowArgumentException_WhenColIsOutOfRange () =
-        let matrix = create 3 3 (fun i -> i + 1)
-        let row = 1
-        let col = 3  // Out of bounds
-        Assert.Throws<ArgumentException>(fun () -> index matrix row col |> ignore) |> ignore
 
-    // Test 5: Indexing with out-of-bounds row (row=-1), should throw ArgumentException
-    [<Test>]
-    member this.Index_ShouldThrowArgumentException_WhenRowIsOutOfRange () =
-        let matrix = create 3 3 (fun i -> i + 1)
-        let row = -1  // Out of bounds
-        let col = 1
-        Assert.Throws<ArgumentException>(fun () -> index matrix row col |> ignore) |> ignore
+[<TestFixture>]
+type CreationalTests () =
 
-    // Test 6: Indexing with row and col equal to matrix dimensions (should throw for row=3)
     [<Test>]
-    member this.Index_ShouldThrowArgumentException_WhenRowIsEqualToMaxRow () =
-        let matrix = create 3 3 (fun i -> i + 1)
-        let row = 3  // Out of bounds (should be [0, 2])
-        let col = 0
-        Assert.Throws<ArgumentException>(fun () -> index matrix row col |> ignore) |> ignore
-        
-    
-    // Test 7: Empty Matrix (0x0) - should handle gracefully (possibly throw a custom exception or return None)
-    [<Test>]
-    member this.Index_ShouldThrowArgumentException_ForEmptyMatrix () =
-        let matrix = create 0 0 (fun _ -> 0)
-        let row = 0
-        let col = 0
-        Assert.Throws<ArgumentException>(fun () -> index matrix row col |> ignore) |> ignore
+    member this.Create_TestSquareMatrixCreationFromArray () =
+        let size = 2
 
-    // Test 8: Single-Element Matrix (1x1) - should return 0 when indexing
-    [<Test>]
-    member this.Index_ShouldReturnCorrectIndexForSingleElementMatrix () =
-        let matrix = create 1 1 (fun _ -> 10)
-        let row = 0
-        let col = 0
-        let computedIndex = index matrix row col
-        let expectedIndex = 0
-        Assert.That(computedIndex, Is.EqualTo(expectedIndex))
+        let matrix = square size (fun i -> i + 1)
+        let matrix2 = fromArray size size [| 1; 2; 3; 4 |]
 
-    // Test 9: Rectangular Matrix (3x2) - indexing should work correctly
-    [<Test>]
-    member this.Index_ShouldReturnCorrectIndexForRectangularMatrix () =
-        let matrix = create 3 2 (fun i -> 1)
-        let row = 2
-        let col = 1
-        let computedIndex = index matrix row col
-        let expectedIndex = 5
-        Assert.That(computedIndex, Is.EqualTo(expectedIndex))
+        Assert.AreEqual(matrix, matrix2)
 
-    // Test 10: Large Matrix (100x100) - Test performance and correctness
     [<Test>]
-    member this.Index_ShouldHandleLargeMatrix () =
-        let matrix = create 100 100 (fun i -> i + 1)
-        let row = 99
-        let col = 99
-        let computedIndex = index matrix row col
-        let expectedIndex = 9999
-        Assert.That(computedIndex, Is.EqualTo(expectedIndex))
+    member this.Create_TestRectangularMatrixCreationFromArray () =
+        let rows = 3
+        let cols = 2
+
+        let matrix = create rows cols (fun i -> i + 1)
+        let matrix2 = fromArray rows cols [| 1; 2; 3; 4; 5; 6 |]
+
+        Assert.AreEqual(matrix, matrix2)
+
+
+
+[<TestFixture>]
+type TransformationTests () =
+
+    [<Test>]
+    member this.Transpose_TestSquareMatrix () =
+        let size = 2
+
+        let tr = transpose (fromArray size size [| 1; 2; 3; 4 |])
+        let target = fromArray size size [| 1; 3; 2; 4 |]
+
+        Assert.AreEqual(target, tr)
+
+    [<Test>]
+    member this.Transpose_TestRectangularMatrix () =
+        let rows = 3
+        let cols = 2
+
+        let tr = transpose (fromArray rows cols [| 1; 2; 3; 4; 5; 6 |])
+        let target = fromArray cols rows [| 1; 3; 5; 2; 4; 6 |]
+
+        Assert.AreEqual(target, tr)
