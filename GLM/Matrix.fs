@@ -1,5 +1,7 @@
 ﻿namespace GLM
 
+open System
+
 module MatrixModule =
     type Matrix<'T> = { Rows: int; Cols: int; Data: 'T array}
 
@@ -17,3 +19,18 @@ module MatrixModule =
 
     let ones rows cols = 
         create rows cols (fun _ -> 1)
+            
+    let fromArray rows cols (arr: 'T array) = 
+        create rows cols (fun i -> arr[i])
+
+    let fromIndex cols i =
+        let row = i / cols
+        let col = i % cols
+
+        row, col
+        
+    let toIndex cols row col =
+        row * cols + col
+
+
+
